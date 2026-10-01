@@ -95,8 +95,8 @@ export function DashboardShell({
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 shrink-0 bg-sidebar text-sidebar-foreground lg:block">
+    <div className="flex h-screen bg-background">
+      <aside className="hidden w-64 shrink-0 overflow-y-auto bg-sidebar text-sidebar-foreground lg:block">
         <SidebarContent business={business} />
       </aside>
 
@@ -107,7 +107,7 @@ export function DashboardShell({
         </SheetContent>
       </Sheet>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex items-center gap-3 border-b border-espresso/10 bg-background px-4 py-3 lg:hidden">
           <Button
             variant="ghost"

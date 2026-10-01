@@ -95,6 +95,7 @@ export interface Database {
           avatar_url: string | null;
           is_active: boolean;
           sort_order: number;
+          access_token: string;
           created_at: string;
         },
         {
@@ -106,6 +107,7 @@ export interface Database {
           avatar_url?: string | null;
           is_active?: boolean;
           sort_order?: number;
+          access_token?: string;
           created_at?: string;
         },
         Partial<{
@@ -117,6 +119,7 @@ export interface Database {
           avatar_url: string | null;
           is_active: boolean;
           sort_order: number;
+          access_token: string;
           created_at: string;
         }>
       >;

@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { StaffFormDialog } from "./staff-form-dialog";
 import { StaffActiveSwitch, DeleteStaffButton } from "./staff-row-controls";
+import { CopyPortalLinkButton } from "./copy-portal-link-button";
 
 export default async function StaffPage() {
   const business = await getCurrentBusiness();
@@ -54,12 +55,15 @@ export default async function StaffPage() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/dashboard/staff/${member.id}`}>
-                      <Images className="size-4" /> Портфолио
-                    </Link>
-                  </Button>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/dashboard/staff/${member.id}`}>
+                        <Images className="size-4" /> Портфолио
+                      </Link>
+                    </Button>
+                    <CopyPortalLinkButton accessToken={member.access_token} />
+                  </div>
                   <div className="flex items-center gap-2">
                     <StaffActiveSwitch id={member.id} isActive={member.is_active} />
                     <StaffFormDialog staff={member} />

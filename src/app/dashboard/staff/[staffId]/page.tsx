@@ -7,6 +7,7 @@ import { getCurrentBusiness } from "@/lib/business";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StaffFormDialog } from "../staff-form-dialog";
+import { CopyPortalLinkButton } from "../copy-portal-link-button";
 import { PortfolioUploadDialog } from "./portfolio-upload-dialog";
 import { DeletePortfolioButton } from "./delete-portfolio-button";
 
@@ -57,7 +58,10 @@ export default async function StaffDetailPage({
               {staff.bio && <p className="mt-1 max-w-lg text-sm text-espresso/50">{staff.bio}</p>}
             </div>
           </div>
-          <StaffFormDialog staff={staff} />
+          <div className="flex items-center gap-2">
+            <CopyPortalLinkButton accessToken={staff.access_token} />
+            <StaffFormDialog staff={staff} />
+          </div>
         </CardContent>
       </Card>
 
