@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSiteHost } from "@/hooks/use-site-host";
 import type { Database } from "@/lib/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -15,6 +16,7 @@ const initialState: SettingsFormState = {};
 
 export function SettingsForm({ business }: { business: Business }) {
   const [state, formAction, pending] = useActionState(updateBusinessSettings, initialState);
+  const host = useSiteHost();
 
   return (
     <form action={formAction} className="flex max-w-xl flex-col gap-5">
@@ -37,7 +39,7 @@ export function SettingsForm({ business }: { business: Business }) {
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="slug">Ссылка для клиентов</Label>
         <div className="flex items-center overflow-hidden rounded-full border border-input pl-4 text-sm text-espresso/50 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <span className="whitespace-nowrap">salonly.app/</span>
+          <span className="whitespace-nowrap">{host}/</span>
           <Input
             id="slug"
             name="slug"

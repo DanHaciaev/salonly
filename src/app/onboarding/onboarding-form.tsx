@@ -5,6 +5,7 @@ import { createBusiness, type OnboardingState } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSiteHost } from "@/hooks/use-site-host";
 
 const initialState: OnboardingState = {};
 
@@ -19,6 +20,7 @@ export function OnboardingForm() {
   const [state, formAction, pending] = useActionState(createBusiness, initialState);
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const host = useSiteHost();
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -37,7 +39,7 @@ export function OnboardingForm() {
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="slug">Ссылка для клиентов</Label>
         <div className="flex items-center overflow-hidden rounded-full border border-input bg-transparent pl-4 text-sm text-espresso/50 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <span className="whitespace-nowrap">salonly.app/</span>
+          <span className="whitespace-nowrap">{host}/</span>
           <Input
             id="slug"
             name="slug"

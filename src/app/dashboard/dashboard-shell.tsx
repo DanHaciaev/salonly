@@ -18,6 +18,7 @@ import {
 import { signOut } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { useSiteHost } from "@/hooks/use-site-host";
 import type { Database } from "@/lib/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -34,6 +35,7 @@ const navItems = [
 
 function SidebarContent({ business, onNavigate }: { business: Business; onNavigate?: () => void }) {
   const pathname = usePathname();
+  const host = useSiteHost();
 
   return (
     <div className="flex h-full flex-col px-4 py-6">
@@ -44,7 +46,7 @@ function SidebarContent({ business, onNavigate }: { business: Business; onNaviga
           target="_blank"
           className="mt-1 inline-flex items-center gap-1 text-xs text-sidebar-foreground/60 hover:text-sidebar-foreground"
         >
-          salonly.app/{business.slug} <ExternalLink className="size-3" />
+          {host}/{business.slug} <ExternalLink className="size-3" />
         </Link>
       </div>
 
