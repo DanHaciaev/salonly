@@ -1,12 +1,10 @@
-import Image from "next/image";
 import { Star } from "lucide-react";
 import { getStaffByToken } from "@/lib/staff-portal";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { PortfolioUploadDialog } from "./portfolio-upload-dialog";
-import { DeletePortfolioButton } from "./delete-portfolio-button";
+import { PortfolioSection } from "./portfolio-section";
 import type { BookingStatus } from "@/lib/supabase/types";
 
 const statusLabels: Record<BookingStatus, string> = {
@@ -149,34 +147,7 @@ export default async function StaffPortalPage({
           )}
         </section>
 
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-heading text-xl text-espresso">Портфолио</h2>
-            <PortfolioUploadDialog token={token} />
-          </div>
-          {!portfolio?.length ? (
-            <Card className="p-8 text-center">
-              <CardContent className="px-0 text-espresso/60">Пока нет работ</CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {portfolio.map((item) => (
-                <div key={item.id} className="group relative overflow-hidden rounded-3xl">
-                  <div className="relative aspect-4/5 w-full bg-muted">
-                    <Image
-                      src={item.image_url}
-                      alt={item.caption ?? "Работа"}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    />
-                  </div>
-                  <DeletePortfolioButton token={token} id={item.id} imageUrl={item.image_url} />
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        <PortfolioSection token={token} portfolio={portfolio ?? []} />
       </div>
     </div>
   );

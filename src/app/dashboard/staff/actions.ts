@@ -19,6 +19,7 @@ export async function upsertStaff(
   const title = String(formData.get("title") ?? "").trim();
   const bio = String(formData.get("bio") ?? "").trim();
   const avatarFile = formData.get("avatar") as File | null;
+  const serviceIds = formData.getAll("service_ids").map(String);
 
   if (!name) return { error: "Введите имя мастера" };
 
@@ -41,11 +42,18 @@ export async function upsertStaff(
     ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
   };
 
-  const { error } = id
-    ? await supabase.from("staff").update(payload).eq("id", id)
-    : await supabase.from("staff").insert(payload);
+  const { data: savedStaff, error } = id
+    ? await supabase.from("staff").update(payload).eq("id", id).select("id").single()
+    : await supabase.from("staff").insert(payload).select("id").single();
 
-  if (error) return { error: "Не удалось сохранить мастера" };
+  if (error || !savedStaff) return { error: "Не удалось сохранить мастера" };
+
+  await supabase.from("staff_services").delete().eq("staff_id", savedStaff.id);
+  if (serviceIds.length) {
+    await supabase
+      .from("staff_services")
+      .insert(serviceIds.map((serviceId) => ({ staff_id: savedStaff.id, service_id: serviceId })));
+  }
 
   revalidatePath("/dashboard/staff");
   return {};

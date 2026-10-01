@@ -29,6 +29,7 @@ export function BookingWizard({
   businessId,
   services,
   staff,
+  staffServices,
   initialServiceId,
   initialStaffId,
 }: {
@@ -36,6 +37,7 @@ export function BookingWizard({
   businessId: string;
   services: Service[];
   staff: Staff[];
+  staffServices: { staff_id: string; service_id: string }[];
   initialServiceId?: string;
   initialStaffId?: string;
 }) {
@@ -58,6 +60,24 @@ export function BookingWizard({
   );
 
   const service = useMemo(() => services.find((s) => s.id === serviceId), [services, serviceId]);
+
+  const restrictedServicesByStaff = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    for (const row of staffServices) {
+      if (!map.has(row.staff_id)) map.set(row.staff_id, new Set());
+      map.get(row.staff_id)!.add(row.service_id);
+    }
+    return map;
+  }, [staffServices]);
+
+  const availableStaff = useMemo(() => {
+    if (!serviceId) return staff;
+    return staff.filter((member) => {
+      const assigned = restrictedServicesByStaff.get(member.id);
+      // No assignments at all means this master is available for every service.
+      return !assigned || assigned.size === 0 || assigned.has(serviceId);
+    });
+  }, [staff, serviceId, restrictedServicesByStaff]);
 
   useEffect(() => {
     if (!date || !staffId || !service) return;
@@ -157,26 +177,32 @@ export function BookingWizard({
           {step === 2 && (
             <div className="flex flex-col gap-3">
               <h2 className="font-heading text-2xl text-espresso">Выберите мастера</h2>
-              {staff.map((member) => (
-                <button
-                  key={member.id}
-                  onClick={() => setStaffId(member.id)}
-                  className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors ${
-                    staffId === member.id
-                      ? "border-soft-blush bg-soft-blush/10"
-                      : "border-espresso/10 hover:border-espresso/30"
-                  }`}
-                >
-                  <Avatar className="size-10">
-                    <AvatarImage src={member.avatar_url ?? undefined} />
-                    <AvatarFallback>{member.name.slice(0, 1)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium text-espresso">{member.name}</p>
-                    {member.title && <p className="text-xs text-espresso/50">{member.title}</p>}
-                  </div>
-                </button>
-              ))}
+              {!availableStaff.length ? (
+                <p className="py-6 text-center text-sm text-espresso/50">
+                  Нет мастеров, выполняющих эту услугу
+                </p>
+              ) : (
+                availableStaff.map((member) => (
+                  <button
+                    key={member.id}
+                    onClick={() => setStaffId(member.id)}
+                    className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors ${
+                      staffId === member.id
+                        ? "border-soft-blush bg-soft-blush/10"
+                        : "border-espresso/10 hover:border-espresso/30"
+                    }`}
+                  >
+                    <Avatar className="size-10">
+                      <AvatarImage src={member.avatar_url ?? undefined} />
+                      <AvatarFallback>{member.name.slice(0, 1)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-espresso">{member.name}</p>
+                      {member.title && <p className="text-xs text-espresso/50">{member.title}</p>}
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
           )}
 
@@ -290,7 +316,7 @@ export function BookingWizard({
             onClick={() => setStep((s) => s + 1)}
             disabled={
               (step === 1 && !serviceId) ||
-              (step === 2 && !staffId) ||
+              (step === 2 && !availableStaff.some((member) => member.id === staffId)) ||
               (step === 3 && !time)
             }
           >

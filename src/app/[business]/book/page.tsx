@@ -31,6 +31,11 @@ export default async function BookPage({
       .order("sort_order"),
   ]);
 
+  const staffIds = (staff ?? []).map((s) => s.id);
+  const { data: staffServices } = staffIds.length
+    ? await supabase.from("staff_services").select("staff_id, service_id").in("staff_id", staffIds)
+    : { data: [] as { staff_id: string; service_id: string }[] };
+
   return (
     <div className="min-h-screen bg-background px-6 py-10">
       <div className="mx-auto mb-8 max-w-xl">
@@ -52,6 +57,7 @@ export default async function BookPage({
           businessId={business.id}
           services={services}
           staff={staff}
+          staffServices={staffServices ?? []}
           initialServiceId={service}
           initialStaffId={staffParam}
         />

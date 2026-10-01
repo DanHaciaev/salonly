@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
 /**
- * Closes a dialog right after a pending form submission finishes without an
- * error. Adjusts state during render (per React's documented pattern for
- * reacting to a value changing) instead of a useEffect, since this only
- * needs to run exactly once per pending→idle transition.
+ * Notifies a parent component (e.g. to collapse an inline form) right after
+ * a pending form submission finishes without an error. This has to be a
+ * useEffect, not a render-time adjustment — `onClose` updates state in a
+ * different component than the one calling this hook, and React only allows
+ * synchronous state adjustments during render for a component's own state.
  */
 export function useCloseDialogOnSuccess({
   pending,
@@ -17,12 +18,12 @@ export function useCloseDialogOnSuccess({
   submitted: boolean;
   onClose: () => void;
 }) {
-  const [wasPending, setWasPending] = useState(pending);
-
-  if (pending !== wasPending) {
-    setWasPending(pending);
-    if (wasPending && !pending && submitted && !hasError) {
+  useEffect(() => {
+    if (!pending && submitted && !hasError) {
       onClose();
     }
-  }
+    // Only react to the pending→idle transition itself, not every render
+    // where hasError/onClose happen to get new identities.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending]);
 }
