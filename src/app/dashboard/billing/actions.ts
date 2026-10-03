@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createCheckout, getSubscription } from "@lemonsqueezy/lemonsqueezy.js";
+import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentBusiness } from "@/lib/business";
 import { configureLemonSqueezy } from "@/lib/lemonsqueezy";
@@ -35,16 +35,4 @@ export async function startCheckout() {
   const url = data?.data.attributes.url;
   if (error || !url) throw new Error("Lemon Squeezy did not return a checkout URL");
   redirect(url);
-}
-
-export async function openBillingPortal() {
-  const business = await getCurrentBusiness();
-  if (!business?.lemonsqueezy_subscription_id) redirect("/dashboard/billing");
-
-  configureLemonSqueezy();
-
-  const { data } = await getSubscription(business.lemonsqueezy_subscription_id);
-  const portalUrl = data?.data.attributes.urls.customer_portal;
-
-  redirect(portalUrl ?? "/dashboard/billing");
 }

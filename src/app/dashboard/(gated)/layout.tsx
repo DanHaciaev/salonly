@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentBusiness } from "@/lib/business";
-
-const ACCESS_ALLOWED_STATUSES = new Set(["trialing", "active"]);
+import { hasActiveAccess } from "@/lib/subscription";
 
 export default async function GatedLayout({
   children,
@@ -11,9 +10,7 @@ export default async function GatedLayout({
   const business = await getCurrentBusiness();
   if (!business) redirect("/onboarding");
 
-  if (!business.subscription_status || !ACCESS_ALLOWED_STATUSES.has(business.subscription_status)) {
-    redirect("/dashboard/billing");
-  }
+  if (!hasActiveAccess(business)) redirect("/dashboard/billing");
 
   return <>{children}</>;
 }

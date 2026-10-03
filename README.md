@@ -4,16 +4,17 @@
 копия Altegio. Каждый клиент платформы получает свою страницу (лого,
 название, услуги, цены, специалисты, портфолио, отзывы) по адресу
 `/<slug>`, его клиенты бронируют без регистрации, владелец управляет всем
-через CRM-панель. Подписка платная: 7 дней бесплатно, затем $200/мес через
-Lemon Squeezy (Stripe не поддерживает Молдову как страну продавца, Lemon
-Squeezy и Paddle — поддерживают; взял Lemon Squeezy за более простой API).
+через CRM-панель. Доступ платный: 7 дней бесплатно без карты, затем разовый
+платёж $200 через Lemon Squeezy — доступ открывается навсегда, без подписки
+и повторных списаний (Stripe не поддерживает Молдову как страну продавца,
+Lemon Squeezy и Paddle — поддерживают; взял Lemon Squeezy за более простой API).
 
 ## Стек
 
 - **Next.js 16** (App Router, TypeScript, Turbopack)
 - **Supabase** — Postgres, Auth, Storage
 - **Tailwind CSS v4** + **shadcn/ui**
-- **Lemon Squeezy** — платная подписка (Checkout + Customer Portal + webhook)
+- **Lemon Squeezy** — разовая оплата доступа (Checkout + webhook)
 - **Resend** — email-уведомления
 - **Telegram Bot API** — уведомления в Telegram
 
@@ -85,14 +86,14 @@ npx supabase db push
    принимать реальные платежи.
 2. Settings → API → создайте API-ключ.
 3. Settings → General → скопируйте Store ID.
-4. Products → New product → тип **Subscription**, цена **$200.00/month**, включите
-   **Free trial** на 7 дней → сохраните, зайдите в вариант продукта и скопируйте
-   Variant ID (виден в URL страницы варианта).
+4. Products → New product → тип **Single payment**, цена **$200.00** (разовая, не
+   подписка — 7-дневный бесплатный период считается в самом приложении, Lemon
+   Squeezy тут не участвует) → сохраните, скопируйте Variant ID (виден в URL
+   страницы варианта).
 5. После деплоя: Settings → Webhooks → Add webhook → URL
-   `https://<ваш-домен>/api/lemonsqueezy/webhook`, события — `subscription_created`,
-   `subscription_updated`, `subscription_cancelled`, `subscription_resumed`,
-   `subscription_expired`, `subscription_paused`, `subscription_unpaused` → задайте
-   Signing secret (любая строка, впишите её же в `LEMONSQUEEZY_WEBHOOK_SECRET`).
+   `https://<ваш-домен>/api/lemonsqueezy/webhook`, события — только
+   `order_created` → задайте Signing secret (любая строка, впишите её же в
+   `LEMONSQUEEZY_WEBHOOK_SECRET`).
 6. В Test mode чекаут принимает тестовые карты — номер и подсказки показываются
    прямо на форме оплаты при открытом переключателе Test mode.
 7. Когда всё проверено — выключите Test mode, создайте тот же продукт в боевом

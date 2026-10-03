@@ -1,36 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { SubscriptionStatus } from "@/lib/supabase/types";
-
-const RELEVANT_EVENTS = new Set([
-  "subscription_created",
-  "subscription_updated",
-  "subscription_cancelled",
-  "subscription_resumed",
-  "subscription_expired",
-  "subscription_paused",
-  "subscription_unpaused",
-]);
-
-function mapStatus(lsStatus: string): SubscriptionStatus | null {
-  switch (lsStatus) {
-    case "on_trial":
-      return "trialing";
-    case "active":
-      return "active";
-    case "past_due":
-    case "unpaid":
-      return "past_due";
-    case "cancelled":
-    case "expired":
-    case "paused":
-    case "pause":
-      return "canceled";
-    default:
-      return null;
-  }
-}
 
 export async function POST(request: NextRequest) {
   const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
@@ -55,32 +25,30 @@ export async function POST(request: NextRequest) {
   const payload = JSON.parse(rawBody);
   const eventName: string = payload.meta?.event_name ?? "";
 
-  if (!RELEVANT_EVENTS.has(eventName)) {
+  // The $200 fee is a one-time purchase (Lemon Squeezy "order"), not a
+  // subscription — a paid order grants lifetime access, nothing to renew.
+  if (eventName !== "order_created") {
     return NextResponse.json({ received: true });
   }
 
   const businessId: string | undefined = payload.meta?.custom_data?.business_id;
   const attrs = payload.data?.attributes;
-  const subscriptionId = payload.data?.id ? String(payload.data.id) : null;
+  const orderId = payload.data?.id ? String(payload.data.id) : null;
 
-  if (!attrs || !subscriptionId) {
+  if (!businessId || !attrs || !orderId || attrs.status !== "paid") {
     return NextResponse.json({ received: true });
   }
 
   const admin = createAdminClient();
-  const update = {
-    lemonsqueezy_customer_id: String(attrs.customer_id),
-    lemonsqueezy_subscription_id: subscriptionId,
-    subscription_status: mapStatus(attrs.status),
-    trial_ends_at: attrs.trial_ends_at ?? null,
-    current_period_end: attrs.renews_at ?? null,
-  };
-
-  if (businessId) {
-    await admin.from("businesses").update(update).eq("id", businessId);
-  } else {
-    await admin.from("businesses").update(update).eq("lemonsqueezy_subscription_id", subscriptionId);
-  }
+  await admin
+    .from("businesses")
+    .update({
+      lemonsqueezy_customer_id: String(attrs.customer_id),
+      lemonsqueezy_order_id: orderId,
+      subscription_status: "active",
+      paid_at: new Date().toISOString(),
+    })
+    .eq("id", businessId);
 
   return NextResponse.json({ received: true });
 }

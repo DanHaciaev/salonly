@@ -1,7 +1,7 @@
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 export type NotifyChannel = "email" | "telegram";
 export type TelegramLinkKind = "owner" | "client";
-export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled" | "incomplete";
+export type SubscriptionStatus = "trialing" | "active";
 
 type Table<Row, Insert, Update> = {
   Row: Row;
@@ -26,10 +26,10 @@ export interface Database {
           created_at: string;
           updated_at: string;
           lemonsqueezy_customer_id: string | null;
-          lemonsqueezy_subscription_id: string | null;
-          subscription_status: SubscriptionStatus | null;
-          trial_ends_at: string | null;
-          current_period_end: string | null;
+          lemonsqueezy_order_id: string | null;
+          subscription_status: SubscriptionStatus;
+          trial_ends_at: string;
+          paid_at: string | null;
         },
         {
           id?: string;
@@ -43,10 +43,10 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           lemonsqueezy_customer_id?: string | null;
-          lemonsqueezy_subscription_id?: string | null;
-          subscription_status?: SubscriptionStatus | null;
-          trial_ends_at?: string | null;
-          current_period_end?: string | null;
+          lemonsqueezy_order_id?: string | null;
+          subscription_status?: SubscriptionStatus;
+          trial_ends_at?: string;
+          paid_at?: string | null;
         },
         Partial<{
           id: string;
@@ -60,10 +60,10 @@ export interface Database {
           created_at: string;
           updated_at: string;
           lemonsqueezy_customer_id: string | null;
-          lemonsqueezy_subscription_id: string | null;
-          subscription_status: SubscriptionStatus | null;
-          trial_ends_at: string | null;
-          current_period_end: string | null;
+          lemonsqueezy_order_id: string | null;
+          subscription_status: SubscriptionStatus;
+          trial_ends_at: string;
+          paid_at: string | null;
         }>
       >;
       services: Table<
