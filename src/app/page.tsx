@@ -17,13 +17,28 @@ import {
 import { Pill } from "@/components/brand/pill";
 import { SectionLabel } from "@/components/brand/section-label";
 
-function NumberBadge({ n }: { n: string }) {
-  return (
-    <span className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-soft-blush/40 font-heading text-base text-soft-blush">
-      {n}
-    </span>
-  );
-}
+const features = [
+  {
+    n: "01",
+    title: "CRM, которая считает за вас",
+    body: "Видно, какие услуги заказывают чаще всего и у каких специалистов больше повторных клиентов.",
+  },
+  {
+    n: "02",
+    title: "Своя ссылка",
+    body: "salonly.app/ваш-бизнес — отдельная страница для каждого клиента.",
+  },
+  {
+    n: "03",
+    title: "Портфолио специалистов",
+    body: "У каждого специалиста — личная галерея работ и отзывы клиентов.",
+  },
+  {
+    n: "04",
+    title: "Email и Telegram без доплат",
+    body: "Клиент сам выбирает удобный канал для уведомлений о записи.",
+  },
+];
 
 const steps = [
   {
@@ -216,74 +231,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATEMENT */}
-      <section className="border-y border-espresso/10 bg-white px-6 py-24">
+      {/* STATEMENT + FEATURES — editorial two-column, not a bento grid */}
+      <section id="features" className="scroll-mt-24 border-y border-espresso/10 bg-white px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[1.1fr_1fr]">
+            <div>
+              <SectionLabel>о платформе</SectionLabel>
+              <h2 className="mt-5 font-heading text-3xl leading-[1.15] text-espresso md:text-5xl">
+                Клиент видит лого, услуги и специалистов вашего бизнеса —
+                <span className="text-soft-blush/60"> не очередную безликую форму записи.</span>
+              </h2>
+              <p className="mt-6 max-w-md text-espresso/70">
+                Каждый бизнес получает собственный адрес и полностью управляет
+                тем, что видят его клиенты: название, логотип, прайс, состав
+                команды, портфолио каждого специалиста и отзывы о нём.
+              </p>
+            </div>
+
+            <div className="flex flex-col divide-y divide-espresso/10 lg:mt-2">
+              {features.map((f) => (
+                <div key={f.n} className="flex gap-5 py-6 first:pt-0 last:pb-0">
+                  <span className="font-heading text-3xl text-soft-blush/35">{f.n}</span>
+                  <div>
+                    <p className="font-heading text-xl text-espresso">{f.title}</p>
+                    <p className="mt-1 text-sm text-espresso/60">{f.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STEPS — large typographic numerals, not icon badges */}
+      <section id="how-it-works" className="scroll-mt-24 px-6 py-24">
         <div className="mx-auto max-w-4xl">
-          <SectionLabel>о платформе</SectionLabel>
-          <h2 className="mt-5 font-heading text-3xl leading-tight text-espresso md:text-5xl">
-            Клиент видит лого, услуги и специалистов вашего бизнеса —
-            <span className="text-soft-blush/60"> не очередную безликую форму записи.</span>
-          </h2>
-          <p className="mt-6 max-w-2xl text-espresso/70">
-            Каждый бизнес получает собственный адрес и полностью управляет тем,
-            что видят его клиенты: название, логотип, прайс, состав команды,
-            портфолио каждого специалиста и отзывы о нём.
-          </p>
-        </div>
-      </section>
-
-      {/* FEATURE GRID — alternating dark / blush cards */}
-      <section id="features" className="scroll-mt-24 px-6 py-24">
-        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-3">
-          <Card className="bg-espresso p-7 text-dusty-rose md:col-span-2">
-            <p className="font-heading text-2xl">CRM, которая считает за вас</p>
-            <p className="mt-3 text-sm text-dusty-rose/70">
-              Видно, какие услуги заказывают чаще всего и у каких специалистов
-              больше повторных клиентов — решения по цене и загрузке команды
-              принимаются на основе цифр, а не ощущений.
-            </p>
-          </Card>
-          <Card className="bg-blush-pink p-7 text-espresso">
-            <p className="font-heading text-2xl">Своя ссылка</p>
-            <p className="mt-3 text-sm text-espresso/70">
-              salonly.app/ваш-бизнес — отдельная страница для каждого клиента.
-            </p>
-          </Card>
-          <Card className="bg-white p-7 text-espresso">
-            <p className="font-heading text-2xl">Портфолио специалистов</p>
-            <p className="mt-3 text-sm text-espresso/70">
-              У каждого специалиста — личная галерея работ и отзывы клиентов.
-            </p>
-          </Card>
-          <Card className="bg-white p-7 text-espresso md:col-span-2">
-            <p className="font-heading text-2xl">Email и Telegram без доплат</p>
-            <p className="mt-3 text-sm text-espresso/70">
-              Клиент сам выбирает удобный канал — уведомление о записи придёт
-              туда, где он его точно увидит.
-            </p>
-          </Card>
-        </div>
-      </section>
-
-      {/* STEPS */}
-      <section id="how-it-works" className="scroll-mt-24 border-y border-espresso/10 bg-white px-6 py-24">
-        <div className="mx-auto max-w-3xl">
           <SectionLabel>как это работает</SectionLabel>
-          <h2 className="mt-4 mb-10 font-heading text-3xl text-espresso md:text-4xl">
+          <h2 className="mt-4 mb-14 font-heading text-3xl text-espresso md:text-4xl">
             Четыре шага до своей страницы записи
           </h2>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-10">
             {steps.map((step, i) => (
               <div
                 key={step.n}
-                className={`flex items-start gap-5 py-6 ${
-                  i !== steps.length - 1 ? "border-b border-espresso/10" : ""
-                }`}
+                className={`flex items-baseline gap-6 ${i % 2 === 1 ? "sm:ml-20" : ""}`}
               >
-                <NumberBadge n={step.n} />
+                <span className="shrink-0 font-heading text-6xl leading-none text-soft-blush/25 md:text-7xl">
+                  {step.n}
+                </span>
                 <div>
-                  <p className="font-heading text-xl text-espresso">{step.title}</p>
-                  <p className="mt-1 text-sm text-espresso/70">{step.body}</p>
+                  <p className="font-heading text-2xl text-espresso">{step.title}</p>
+                  <p className="mt-1.5 max-w-sm text-sm text-espresso/60">{step.body}</p>
                 </div>
               </div>
             ))}
@@ -353,33 +351,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="px-6 py-24">
-        <Card className="mx-auto max-w-4xl bg-gradient-to-br from-soft-blush to-espresso p-12 text-center text-dusty-rose">
-          <CardContent className="px-0">
-            <h2 className="font-heading text-3xl md:text-4xl">
-              Готовы запустить свой бизнес онлайн?
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-dusty-rose/80">
-              7 дней бесплатно, своя ссылка для клиентов уже сегодня.
-            </p>
-            <form
-              action="/signup"
-              method="GET"
-              className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
-            >
-              <input
-                type="email"
-                name="email"
-                placeholder="Ваш email"
-                className="h-12 flex-1 rounded-full border-0 bg-white/95 px-5 text-sm text-espresso placeholder:text-espresso/40 outline-none"
-              />
-              <Button type="submit" size="lg" variant="secondary" className="h-12 px-6">
-                Начать <ArrowRight />
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+      {/* FINAL CTA — full-bleed editorial band, not a floating gradient card */}
+      <section className="bg-espresso px-6 py-28 text-center text-dusty-rose">
+        <div className="mx-auto max-w-2xl">
+          <span className="font-script text-3xl text-blush-pink">Начните сегодня</span>
+          <h2 className="mt-3 font-heading text-4xl leading-[1.1] md:text-6xl">
+            Готовы запустить свой бизнес онлайн?
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-dusty-rose/70">
+            7 дней бесплатно, своя ссылка для клиентов уже сегодня.
+          </p>
+          <form
+            action="/signup"
+            method="GET"
+            className="mx-auto mt-9 flex max-w-md flex-col gap-3 sm:flex-row"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="Ваш email"
+              className="h-12 flex-1 rounded-full border-0 bg-white/95 px-5 text-sm text-espresso placeholder:text-espresso/40 outline-none"
+            />
+            <Button type="submit" size="lg" variant="secondary" className="h-12 px-6">
+              Начать <ArrowRight />
+            </Button>
+          </form>
+        </div>
       </section>
 
       <footer className="border-t border-espresso/10 px-6 py-10">
