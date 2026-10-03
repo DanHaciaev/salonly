@@ -5,14 +5,15 @@
 название, услуги, цены, специалисты, портфолио, отзывы) по адресу
 `/<slug>`, его клиенты бронируют без регистрации, владелец управляет всем
 через CRM-панель. Подписка платная: 7 дней бесплатно, затем $200/мес через
-Stripe.
+Lemon Squeezy (Stripe не поддерживает Молдову как страну продавца, Lemon
+Squeezy и Paddle — поддерживают; взял Lemon Squeezy за более простой API).
 
 ## Стек
 
 - **Next.js 16** (App Router, TypeScript, Turbopack)
 - **Supabase** — Postgres, Auth, Storage
 - **Tailwind CSS v4** + **shadcn/ui**
-- **Stripe** — платная подписка (Checkout + Billing Portal + webhook)
+- **Lemon Squeezy** — платная подписка (Checkout + Customer Portal + webhook)
 - **Resend** — email-уведомления
 - **Telegram Bot API** — уведомления в Telegram
 
@@ -45,10 +46,10 @@ cp .env.local.example .env.local
 | `TELEGRAM_BOT_TOKEN` | @BotFather → `/newbot` |
 | `TELEGRAM_BOT_USERNAME` | Юзернейм бота без `@` |
 | `NEXT_PUBLIC_SITE_URL` | URL деплоя (в деве — `http://localhost:3000`) |
-| `STRIPE_SECRET_KEY` | Stripe → Developers → API keys (Test mode) |
-| `STRIPE_PUBLISHABLE_KEY` | Stripe → Developers → API keys (Test mode) |
-| `STRIPE_PRICE_ID` | Stripe → Products → цена $200/мес recurring |
-| `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → signing secret |
+| `LEMONSQUEEZY_API_KEY` | Lemon Squeezy → Settings → API (Test mode) |
+| `LEMONSQUEEZY_STORE_ID` | Lemon Squeezy → Settings → General |
+| `LEMONSQUEEZY_VARIANT_ID` | Lemon Squeezy → Products → вариант подписки $200/мес |
+| `LEMONSQUEEZY_WEBHOOK_SECRET` | Lemon Squeezy → Settings → Webhooks → signing secret |
 
 ### Применение схемы БД
 
@@ -77,20 +78,25 @@ npx supabase db push
    Вебхук требует публичный HTTPS-адрес — локально (на `localhost`) бот работать не будет,
    только после деплоя на Vercel.
 
-### Stripe
+### Lemon Squeezy
 
-1. Зарегистрируйтесь на [stripe.com](https://stripe.com), оставайтесь в **Test mode**
-   (переключатель в шапке дашборда) пока не будете готовы принимать реальные платежи.
-2. Developers → API keys → скопируйте Secret key и Publishable key.
-3. Products → Add product → цена **$200.00**, **Recurring**, **Monthly** → сохраните,
-   скопируйте Price ID (`price_...`).
-4. После деплоя: Developers → Webhooks → Add endpoint → URL
-   `https://<ваш-домен>/api/stripe/webhook`, события — `checkout.session.completed`,
-   `customer.subscription.updated`, `customer.subscription.deleted` → скопируйте
-   signing secret (`whsec_...`).
-5. Тестовая карта для чекаута: `4242 4242 4242 4242`, любая будущая дата, любой CVC.
-6. Когда всё проверено — переключите Stripe на Live mode, создайте там тот же продукт
-   и замените тестовые ключи на боевые в переменных окружения Vercel.
+1. Зарегистрируйтесь на [lemonsqueezy.com](https://lemonsqueezy.com), создайте Store.
+   Оставайтесь в **Test mode** (переключатель в дашборде), пока не будете готовы
+   принимать реальные платежи.
+2. Settings → API → создайте API-ключ.
+3. Settings → General → скопируйте Store ID.
+4. Products → New product → тип **Subscription**, цена **$200.00/month**, включите
+   **Free trial** на 7 дней → сохраните, зайдите в вариант продукта и скопируйте
+   Variant ID (виден в URL страницы варианта).
+5. После деплоя: Settings → Webhooks → Add webhook → URL
+   `https://<ваш-домен>/api/lemonsqueezy/webhook`, события — `subscription_created`,
+   `subscription_updated`, `subscription_cancelled`, `subscription_resumed`,
+   `subscription_expired`, `subscription_paused`, `subscription_unpaused` → задайте
+   Signing secret (любая строка, впишите её же в `LEMONSQUEEZY_WEBHOOK_SECRET`).
+6. В Test mode чекаут принимает тестовые карты — номер и подсказки показываются
+   прямо на форме оплаты при открытом переключателе Test mode.
+7. Когда всё проверено — выключите Test mode, создайте тот же продукт в боевом
+   режиме и замените тестовые ключи на боевые в переменных окружения Vercel.
 
 ## Локальная разработка
 
@@ -107,4 +113,4 @@ npm run dev
 2. Импортируйте его в [Vercel](https://vercel.com/new).
 3. Добавьте все переменные из `.env.local` в Vercel → Project Settings → Environment Variables
    (для `NEXT_PUBLIC_SITE_URL` укажите итоговый домен Vercel).
-4. После первого деплоя настройте Telegram-вебхук (см. выше) на домен Vercel.
+4. После первого деплоя настройте Telegram- и Lemon Squeezy-вебхуки (см. выше) на домен Vercel.

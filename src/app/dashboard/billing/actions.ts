@@ -1,9 +1,10 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { createCheckout, getSubscription } from "@lemonsqueezy/lemonsqueezy.js";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentBusiness } from "@/lib/business";
-import { getStripe } from "@/lib/stripe";
+import { configureLemonSqueezy } from "@/lib/lemonsqueezy";
 
 export async function startCheckout() {
   const business = await getCurrentBusiness();
@@ -15,37 +16,35 @@ export async function startCheckout() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const stripe = getStripe();
+  configureLemonSqueezy();
+
+  const storeId = process.env.LEMONSQUEEZY_STORE_ID!;
+  const variantId = process.env.LEMONSQUEEZY_VARIANT_ID!;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    ...(business.stripe_customer_id
-      ? { customer: business.stripe_customer_id }
-      : { customer_email: user.email ?? undefined }),
-    line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
-    subscription_data: { trial_period_days: 7 },
-    success_url: `${siteUrl}/dashboard/billing?checkout=success`,
-    cancel_url: `${siteUrl}/dashboard/billing?checkout=cancelled`,
-    client_reference_id: business.id,
-    metadata: { business_id: business.id },
+  const { data, error } = await createCheckout(storeId, variantId, {
+    checkoutData: {
+      email: user.email ?? undefined,
+      custom: { business_id: business.id },
+    },
+    productOptions: {
+      redirectUrl: `${siteUrl}/dashboard/billing?checkout=success`,
+    },
   });
 
-  if (!session.url) throw new Error("Stripe did not return a checkout URL");
-  redirect(session.url);
+  const url = data?.data.attributes.url;
+  if (error || !url) throw new Error("Lemon Squeezy did not return a checkout URL");
+  redirect(url);
 }
 
 export async function openBillingPortal() {
   const business = await getCurrentBusiness();
-  if (!business?.stripe_customer_id) redirect("/dashboard/billing");
+  if (!business?.lemonsqueezy_subscription_id) redirect("/dashboard/billing");
 
-  const stripe = getStripe();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  configureLemonSqueezy();
 
-  const session = await stripe.billingPortal.sessions.create({
-    customer: business.stripe_customer_id,
-    return_url: `${siteUrl}/dashboard/billing`,
-  });
+  const { data } = await getSubscription(business.lemonsqueezy_subscription_id);
+  const portalUrl = data?.data.attributes.urls.customer_portal;
 
-  redirect(session.url);
+  redirect(portalUrl ?? "/dashboard/billing");
 }

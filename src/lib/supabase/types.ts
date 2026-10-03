@@ -25,8 +25,8 @@ export interface Database {
           address: string | null;
           created_at: string;
           updated_at: string;
-          stripe_customer_id: string | null;
-          stripe_subscription_id: string | null;
+          lemonsqueezy_customer_id: string | null;
+          lemonsqueezy_subscription_id: string | null;
           subscription_status: SubscriptionStatus | null;
           trial_ends_at: string | null;
           current_period_end: string | null;
@@ -42,8 +42,8 @@ export interface Database {
           address?: string | null;
           created_at?: string;
           updated_at?: string;
-          stripe_customer_id?: string | null;
-          stripe_subscription_id?: string | null;
+          lemonsqueezy_customer_id?: string | null;
+          lemonsqueezy_subscription_id?: string | null;
           subscription_status?: SubscriptionStatus | null;
           trial_ends_at?: string | null;
           current_period_end?: string | null;
@@ -59,8 +59,8 @@ export interface Database {
           address: string | null;
           created_at: string;
           updated_at: string;
-          stripe_customer_id: string | null;
-          stripe_subscription_id: string | null;
+          lemonsqueezy_customer_id: string | null;
+          lemonsqueezy_subscription_id: string | null;
           subscription_status: SubscriptionStatus | null;
           trial_ends_at: string | null;
           current_period_end: string | null;
