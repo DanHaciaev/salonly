@@ -29,12 +29,12 @@ const steps = [
   {
     n: "01",
     title: "регистрация",
-    body: "Создаёте аккаунт, придумываете адрес своей страницы — salonly.app/ваш-салон.",
+    body: "Создаёте аккаунт, придумываете адрес своей страницы — salonly.app/ваш-бизнес.",
   },
   {
     n: "02",
     title: "настройка страницы",
-    body: "Загружаете лого, описываете услуги и цены, добавляете мастеров и их портфолио.",
+    body: "Загружаете лого, описываете услуги и цены, добавляете специалистов и их портфолио.",
   },
   {
     n: "03",
@@ -48,52 +48,25 @@ const steps = [
   },
 ];
 
-const plans = [
-  {
-    name: "старт",
-    price: "0 ₽",
-    note: "бесплатно насовсем",
-    features: [
-      "1 салон, своя ссылка",
-      "До 2 мастеров",
-      "Онлайн-запись без лимитов",
-      "Email-уведомления",
-    ],
-    cta: "Начать бесплатно",
-    highlighted: false,
-  },
-  {
-    name: "рост",
-    price: "990 ₽/мес",
-    note: "для салона с командой",
-    features: [
-      "До 10 мастеров",
-      "Telegram-уведомления",
-      "Портфолио и отзывы мастеров",
-      "CRM-аналитика: топ услуг и мастеров",
-    ],
-    cta: "Попробовать 14 дней",
-    highlighted: true,
-  },
-  {
-    name: "prime",
-    price: "от 2490 ₽/мес",
-    note: "для сети салонов",
-    features: [
-      "Неограниченно мастеров",
-      "Приоритетная поддержка",
-      "Персональный онбординг",
-      "Расширенная аналитика клиентов",
-    ],
-    cta: "Обсудить подключение",
-    highlighted: false,
-  },
-];
+const plan = {
+  price: "$200",
+  period: "/мес",
+  note: "первые 7 дней бесплатно для всех — отменить можно в любой момент",
+  features: [
+    "Неограниченно специалистов и услуг",
+    "Своя страница и своя ссылка",
+    "CRM: аналитика, записи, отзывы",
+    "Email и Telegram-уведомления",
+    "Личный кабинет для каждого специалиста",
+    "Гибкое расписание работы под каждого",
+  ],
+  cta: "Начать бесплатный период",
+};
 
 const faqs = [
   {
     q: "Нужно ли клиентам регистрироваться, чтобы записаться?",
-    a: "Нет. Клиент открывает страницу вашего салона, выбирает услугу, мастера и время, оставляет имя и телефон — без создания аккаунта.",
+    a: "Нет. Клиент открывает страницу вашего бизнеса, выбирает услугу, специалиста и время, оставляет имя и телефон — без создания аккаунта.",
   },
   {
     q: "Как клиенты узнают, что запись подтверждена?",
@@ -101,11 +74,15 @@ const faqs = [
   },
   {
     q: "Можно ли изменить дизайн страницы под свой бренд?",
-    a: "Да — логотип, название, услуги, цены, состав мастеров, портфолио и отзывы полностью редактируются в вашей CRM-панели.",
+    a: "Да — логотип, название, услуги, цены, состав команды, портфолио и отзывы полностью редактируются в вашей CRM-панели.",
   },
   {
-    q: "Что видно в CRM-аналитике?",
-    a: "Какие услуги заказывают чаще всего, у каких мастеров больше всего записей, и какие клиенты возвращаются снова.",
+    q: "Нужно ли привязывать карту сразу?",
+    a: "Да, чтобы запустить 7 бесплатных дней — но списание произойдёт только после их окончания, и подписку можно отменить в любой момент до этого без списаний.",
+  },
+  {
+    q: "Подходит ли платформа не только для салонов красоты?",
+    a: "Да — платформой пользуются салоны, студии, мастерские, консультанты и любой другой бизнес, где клиенты записываются на услугу к конкретному специалисту.",
   },
 ];
 
@@ -120,7 +97,7 @@ export default function Home() {
           <nav className="hidden items-center gap-2 md:flex">
             <Pill>Возможности</Pill>
             <Pill>Тарифы</Pill>
-            <Pill>Для салонов</Pill>
+            <Pill>Как это работает</Pill>
           </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
@@ -138,7 +115,7 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden px-6 pt-14 pb-28">
         <div className="pointer-events-none absolute inset-x-0 top-6 select-none whitespace-nowrap text-center font-heading text-[14vw] leading-none font-light text-espresso/[0.06] md:text-[9vw]">
-          SALON ONLINE
+          BOOKING ONLINE
         </div>
 
         <div className="relative mx-auto max-w-4xl text-center">
@@ -148,13 +125,13 @@ export default function Home() {
           </Pill>
 
           <h1 className="font-heading text-5xl leading-[1.05] font-medium text-espresso md:text-7xl">
-            Ваш салон красоты,
+            Ваш бизнес,
             <br />
             <span className="relative inline-block">
               <span className="text-soft-blush">онлайн за 10 минут</span>
               <svg
                 viewBox="0 0 300 20"
-                className="absolute -bottom-2 left-0 w-full text-soft-blush"
+                className="absolute -bottom-2 left-0 h-4 w-full text-soft-blush"
                 preserveAspectRatio="none"
               >
                 <path
@@ -169,7 +146,7 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-espresso/70 md:text-lg">
-            Своя страница записи, CRM для управления услугами и мастерами,
+            Своя страница записи, CRM для управления услугами и специалистами,
             уведомления клиентам в Telegram и на почту — без разработчиков и
             без лишних настроек.
           </p>
@@ -177,16 +154,16 @@ export default function Home() {
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button size="lg" className="h-12 px-7 text-base" asChild>
               <Link href="/signup">
-                Создать страницу салона <ArrowRight />
+                Создать свою страницу <ArrowRight />
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-7 text-base" asChild>
-              <Link href="/demo-salon">Смотреть демо-салон</Link>
+              <Link href="/demo-salon">Смотреть демо</Link>
             </Button>
           </div>
 
           <p className="mt-4 text-xs text-espresso/50">
-            established in 2026 · для салонов красоты, барбершопов и студий маникюра
+            established in 2026 · для любого бизнеса по записи: салоны, студии, мастерские, консультации
           </p>
         </div>
 
@@ -202,9 +179,9 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap gap-2">
                 {[
-                  "Своя страница салона",
+                  "Своя страница бизнеса",
                   "Услуги и цены",
-                  "Карточки мастеров",
+                  "Карточки специалистов",
                   "Портфолио работ",
                   "Отзывы клиентов",
                   "CRM-аналитика",
@@ -237,13 +214,13 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <SectionLabel>о платформе</SectionLabel>
           <h2 className="mt-5 font-heading text-3xl leading-tight text-espresso md:text-5xl">
-            Клиент видит лого, услуги и мастеров вашего салона —
+            Клиент видит лого, услуги и специалистов вашего бизнеса —
             <span className="text-soft-blush/60"> не очередную безликую форму записи.</span>
           </h2>
           <p className="mt-6 max-w-2xl text-espresso/70">
-            Каждый салон получает собственный адрес и полностью управляет тем,
+            Каждый бизнес получает собственный адрес и полностью управляет тем,
             что видят его клиенты: название, логотип, прайс, состав команды,
-            портфолио каждого мастера и отзывы о нём.
+            портфолио каждого специалиста и отзывы о нём.
           </p>
         </div>
       </section>
@@ -254,7 +231,7 @@ export default function Home() {
           <Card className="bg-espresso p-7 text-dusty-rose md:col-span-2">
             <p className="font-heading text-2xl">CRM, которая считает за вас</p>
             <p className="mt-3 text-sm text-dusty-rose/70">
-              Видно, какие услуги заказывают чаще всего и у каких мастеров
+              Видно, какие услуги заказывают чаще всего и у каких специалистов
               больше повторных клиентов — решения по цене и загрузке команды
               принимаются на основе цифр, а не ощущений.
             </p>
@@ -262,11 +239,11 @@ export default function Home() {
           <Card className="bg-blush-pink p-7 text-espresso">
             <p className="font-heading text-2xl">Своя ссылка</p>
             <p className="mt-3 text-sm text-espresso/70">
-              salonly.app/ваш-салон — отдельная страница для каждого бизнеса.
+              salonly.app/ваш-бизнес — отдельная страница для каждого клиента.
             </p>
           </Card>
           <Card className="bg-white p-7 text-espresso">
-            <p className="font-heading text-2xl">Портфолио мастеров</p>
+            <p className="font-heading text-2xl">Портфолио специалистов</p>
             <p className="mt-3 text-sm text-espresso/70">
               У каждого специалиста — личная галерея работ и отзывы клиентов.
             </p>
@@ -312,60 +289,34 @@ export default function Home() {
         <div className="mx-auto max-w-5xl text-center">
           <SectionLabel>тарифы</SectionLabel>
           <h2 className="mx-auto mt-4 max-w-xl font-heading text-3xl text-espresso md:text-4xl">
-            Выберите свой вариант
+            Один простой тариф
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-espresso/60">
-            Начните бесплатно, растите с салоном — без привязки к карте на
-            старте.
+            Без скрытых условий — 7 дней бесплатно, дальше фиксированная цена
           </p>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {plans.map((plan) => (
-              <Card
-                key={plan.name}
-                className={`p-7 text-left ${
-                  plan.highlighted
-                    ? "bg-espresso text-dusty-rose ring-2 ring-soft-blush"
-                    : "bg-white text-espresso"
-                }`}
-              >
-                <p className="font-heading text-2xl">{plan.name}</p>
-                <p
-                  className={`mt-1 text-xs ${
-                    plan.highlighted ? "text-dusty-rose/60" : "text-espresso/50"
-                  }`}
-                >
-                  {plan.note}
-                </p>
-                <p className="mt-5 font-heading text-3xl">{plan.price}</p>
+          <Card className="mx-auto mt-12 max-w-md bg-espresso p-9 text-left text-dusty-rose ring-2 ring-soft-blush">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-heading text-5xl">{plan.price}</span>
+              <span className="text-dusty-rose/60">{plan.period}</span>
+            </div>
+            <p className="mt-2 text-sm text-dusty-rose/60">{plan.note}</p>
 
-                <ul className="mt-6 space-y-2.5 text-sm">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check className="mt-0.5 size-4 shrink-0 text-soft-blush" />
-                      <span
-                        className={
-                          plan.highlighted ? "text-dusty-rose/90" : "text-espresso/80"
-                        }
-                      >
-                        {f}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+            <ul className="mt-7 space-y-2.5 text-sm">
+              {plan.features.map((f) => (
+                <li key={f} className="flex items-start gap-2">
+                  <Check className="mt-0.5 size-4 shrink-0 text-soft-blush" />
+                  <span className="text-dusty-rose/90">{f}</span>
+                </li>
+              ))}
+            </ul>
 
-                <Button
-                  className="mt-7 w-full"
-                  variant={plan.highlighted ? "secondary" : "default"}
-                  asChild
-                >
-                  <Link href="/signup">
-                    {plan.cta} <ArrowRight />
-                  </Link>
-                </Button>
-              </Card>
-            ))}
-          </div>
+            <Button className="mt-8 w-full" variant="secondary" asChild>
+              <Link href="/signup">
+                {plan.cta} <ArrowRight />
+              </Link>
+            </Button>
+          </Card>
         </div>
       </section>
 
@@ -400,10 +351,10 @@ export default function Home() {
         <Card className="mx-auto max-w-4xl bg-gradient-to-br from-soft-blush to-espresso p-12 text-center text-dusty-rose">
           <CardContent className="px-0">
             <h2 className="font-heading text-3xl md:text-4xl">
-              Готовы запустить свой салон онлайн?
+              Готовы запустить свой бизнес онлайн?
             </h2>
             <p className="mx-auto mt-3 max-w-md text-dusty-rose/80">
-              Бесплатная регистрация, своя ссылка для клиентов уже сегодня.
+              7 дней бесплатно, своя ссылка для клиентов уже сегодня.
             </p>
             <div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
               <input
@@ -422,7 +373,7 @@ export default function Home() {
       <footer className="border-t border-espresso/10 px-6 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-espresso/50 md:flex-row">
           <span className="font-heading text-lg text-espresso">salonly</span>
-          <span>© {new Date().getFullYear()} salonly — онлайн-запись для салонов красоты</span>
+          <span>© {new Date().getFullYear()} salonly — онлайн-запись для любого бизнеса</span>
         </div>
       </footer>
     </div>

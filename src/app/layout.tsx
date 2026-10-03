@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, Caveat } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans, Caveat } from "next/font/google";
 import "./globals.css";
 
-const fontSans = Inter({
+const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin", "latin-ext"],
 });
@@ -20,9 +20,9 @@ const fontScript = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Salonly — платформа онлайн-записи для салонов красоты",
+  title: "Salonly — платформа онлайн-записи для бизнеса",
   description:
-    "Сайт бронирования, CRM и уведомления для салонов красоты — своя страница, своя команда, свои клиенты.",
+    "Сайт бронирования, CRM и уведомления для любого бизнеса по записи — своя страница, своя команда, свои клиенты.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
