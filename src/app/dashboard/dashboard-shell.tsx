@@ -11,6 +11,7 @@ import {
   Star,
   Settings,
   Bell,
+  CreditCard,
   ExternalLink,
   LogOut,
   Menu,
@@ -31,6 +32,7 @@ const navItems = [
   { href: "/dashboard/reviews", label: "Отзывы", icon: Star },
   { href: "/dashboard/notifications", label: "Уведомления", icon: Bell },
   { href: "/dashboard/settings", label: "Настройки", icon: Settings },
+  { href: "/dashboard/billing", label: "Подписка", icon: CreditCard },
 ];
 
 function SidebarContent({ business, onNavigate }: { business: Business; onNavigate?: () => void }) {

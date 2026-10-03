@@ -9,7 +9,6 @@ import type { NotifyChannel } from "@/lib/supabase/types";
 const SLOT_STEP_MINUTES = 15;
 
 export async function getAvailableSlotsAction(
-  businessId: string,
   staffId: string,
   durationMinutes: number,
   date: string
@@ -18,14 +17,17 @@ export async function getAvailableSlotsAction(
   const dayOfWeek = new Date(`${date}T00:00:00`).getDay();
 
   const { data: hours } = await supabase
-    .from("business_hours")
-    .select("open_time, close_time")
-    .eq("business_id", businessId)
+    .from("staff_hours")
+    .select("start_time, end_time")
+    .eq("staff_id", staffId)
     .eq("day_of_week", dayOfWeek)
     .maybeSingle();
 
-  const openTime = hours?.open_time?.slice(0, 5) ?? "09:00";
-  const closeTime = hours?.close_time?.slice(0, 5) ?? "20:00";
+  // No row for this day means this master doesn't work on it.
+  if (!hours) return [];
+
+  const openTime = hours.start_time.slice(0, 5);
+  const closeTime = hours.end_time.slice(0, 5);
 
   const dayStart = new Date(`${date}T00:00:00`);
   const rangeStart = new Date(`${date}T${openTime}:00`);

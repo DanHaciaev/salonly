@@ -23,16 +23,18 @@ export default async function StaffDetailPage({
 
   if (!staff) notFound();
 
-  const [{ data: portfolio }, { data: services }, { data: assignments }] = await Promise.all([
-    supabase
-      .from("portfolio_items")
-      .select("*")
-      .eq("staff_id", staffId)
-      .order("sort_order")
-      .order("created_at", { ascending: false }),
-    supabase.from("services").select("*").eq("business_id", business!.id).order("sort_order"),
-    supabase.from("staff_services").select("service_id").eq("staff_id", staffId),
-  ]);
+  const [{ data: portfolio }, { data: services }, { data: assignments }, { data: hours }] =
+    await Promise.all([
+      supabase
+        .from("portfolio_items")
+        .select("*")
+        .eq("staff_id", staffId)
+        .order("sort_order")
+        .order("created_at", { ascending: false }),
+      supabase.from("services").select("*").eq("business_id", business!.id).order("sort_order"),
+      supabase.from("staff_services").select("service_id").eq("staff_id", staffId),
+      supabase.from("staff_hours").select("*").eq("staff_id", staffId),
+    ]);
 
   const assignedServiceIds = new Set((assignments ?? []).map((a) => a.service_id));
 
@@ -50,6 +52,7 @@ export default async function StaffDetailPage({
         portfolio={portfolio ?? []}
         services={services ?? []}
         assignedServiceIds={assignedServiceIds}
+        hours={hours ?? []}
       />
     </div>
   );

@@ -26,7 +26,6 @@ function toDateKey(date: Date) {
 
 export function BookingWizard({
   slug,
-  businessId,
   services,
   staff,
   staffServices,
@@ -34,7 +33,6 @@ export function BookingWizard({
   initialStaffId,
 }: {
   slug: string;
-  businessId: string;
   services: Service[];
   staff: Staff[];
   staffServices: { staff_id: string; service_id: string }[];
@@ -84,10 +82,10 @@ export function BookingWizard({
     // eslint-disable-next-line react-hooks/set-state-in-effect -- synchronizing with the server-computed slot list for the selected date/staff/service
     setLoadingSlots(true);
     setTime("");
-    getAvailableSlotsAction(businessId, staffId, service.duration_minutes, toDateKey(date))
+    getAvailableSlotsAction(staffId, service.duration_minutes, toDateKey(date))
       .then(setSlots)
       .finally(() => setLoadingSlots(false));
-  }, [date, staffId, service, businessId]);
+  }, [date, staffId, service]);
 
   async function handleSubmit() {
     setSubmitting(true);

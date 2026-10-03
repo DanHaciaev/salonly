@@ -54,7 +54,6 @@ export default async function BookPage({
       ) : (
         <BookingWizard
           slug={slug}
-          businessId={business.id}
           services={services}
           staff={staff}
           staffServices={staffServices ?? []}

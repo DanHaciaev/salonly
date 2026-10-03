@@ -1,6 +1,7 @@
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 export type NotifyChannel = "email" | "telegram";
 export type TelegramLinkKind = "owner" | "client";
+export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled" | "incomplete";
 
 type Table<Row, Insert, Update> = {
   Row: Row;
@@ -24,6 +25,11 @@ export interface Database {
           address: string | null;
           created_at: string;
           updated_at: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          subscription_status: SubscriptionStatus | null;
+          trial_ends_at: string | null;
+          current_period_end: string | null;
         },
         {
           id?: string;
@@ -36,6 +42,11 @@ export interface Database {
           address?: string | null;
           created_at?: string;
           updated_at?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          subscription_status?: SubscriptionStatus | null;
+          trial_ends_at?: string | null;
+          current_period_end?: string | null;
         },
         Partial<{
           id: string;
@@ -48,6 +59,11 @@ export interface Database {
           address: string | null;
           created_at: string;
           updated_at: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          subscription_status: SubscriptionStatus | null;
+          trial_ends_at: string | null;
+          current_period_end: string | null;
         }>
       >;
       services: Table<
@@ -221,27 +237,27 @@ export interface Database {
           created_at: string;
         }>
       >;
-      business_hours: Table<
+      staff_hours: Table<
         {
           id: string;
-          business_id: string;
+          staff_id: string;
           day_of_week: number;
-          open_time: string;
-          close_time: string;
+          start_time: string;
+          end_time: string;
         },
         {
           id?: string;
-          business_id: string;
+          staff_id: string;
           day_of_week: number;
-          open_time: string;
-          close_time: string;
+          start_time: string;
+          end_time: string;
         },
         Partial<{
           id: string;
-          business_id: string;
+          staff_id: string;
           day_of_week: number;
-          open_time: string;
-          close_time: string;
+          start_time: string;
+          end_time: string;
         }>
       >;
       bookings: Table<

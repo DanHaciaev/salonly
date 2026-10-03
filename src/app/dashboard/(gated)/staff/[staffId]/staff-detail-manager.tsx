@@ -10,22 +10,26 @@ import { StaffForm } from "../staff-form";
 import { CopyPortalLinkButton } from "../copy-portal-link-button";
 import { PortfolioForm } from "./portfolio-form";
 import { DeletePortfolioButton } from "./delete-portfolio-button";
+import { ScheduleForm } from "./schedule-form";
 import type { Database } from "@/lib/supabase/types";
 
 type Staff = Database["public"]["Tables"]["staff"]["Row"];
 type Service = Database["public"]["Tables"]["services"]["Row"];
 type PortfolioItem = Database["public"]["Tables"]["portfolio_items"]["Row"];
+type StaffHours = Database["public"]["Tables"]["staff_hours"]["Row"];
 
 export function StaffDetailManager({
   staff,
   portfolio,
   services,
   assignedServiceIds,
+  hours,
 }: {
   staff: Staff;
   portfolio: PortfolioItem[];
   services: Service[];
   assignedServiceIds: Set<string>;
+  hours: StaffHours[];
 }) {
   const [editingHeader, setEditingHeader] = useState(false);
   const [addingPortfolio, setAddingPortfolio] = useState(false);
@@ -64,7 +68,12 @@ export function StaffDetailManager({
         </Card>
       )}
 
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-8">
+        <h2 className="mb-4 font-heading text-2xl text-espresso">Расписание</h2>
+        <ScheduleForm staffId={staff.id} hours={hours} />
+      </div>
+
+      <div className="mt-8 flex items-center justify-between">
         <h2 className="font-heading text-2xl text-espresso">Портфолио</h2>
         {!addingPortfolio && (
           <Button onClick={() => setAddingPortfolio(true)}>
