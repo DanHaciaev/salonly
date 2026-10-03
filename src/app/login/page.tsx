@@ -2,7 +2,13 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 py-16">
       <Link href="/" className="mb-8 font-heading text-2xl text-espresso">
@@ -14,6 +20,11 @@ export default function LoginPage() {
           <p className="mt-1 mb-6 text-sm text-espresso/60">
             Войдите, чтобы управлять своим салоном
           </p>
+          {error && (
+            <p className="mb-4 text-sm text-destructive">
+              Не удалось войти через Google, попробуйте ещё раз.
+            </p>
+          )}
           <LoginForm />
         </CardContent>
       </Card>

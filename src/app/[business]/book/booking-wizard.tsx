@@ -31,6 +31,7 @@ export function BookingWizard({
   staffServices,
   initialServiceId,
   initialStaffId,
+  locationId,
 }: {
   slug: string;
   services: Service[];
@@ -38,6 +39,7 @@ export function BookingWizard({
   staffServices: { staff_id: string; service_id: string }[];
   initialServiceId?: string;
   initialStaffId?: string;
+  locationId?: string;
 }) {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState(initialServiceId ?? "");
@@ -69,13 +71,15 @@ export function BookingWizard({
   }, [staffServices]);
 
   const availableStaff = useMemo(() => {
-    if (!serviceId) return staff;
     return staff.filter((member) => {
+      // No location assigned means this master works everywhere.
+      if (locationId && member.location_id && member.location_id !== locationId) return false;
+      if (!serviceId) return true;
       const assigned = restrictedServicesByStaff.get(member.id);
-      // No assignments at all means this master is available for every service.
+      // No service assignments at all means this master does every service.
       return !assigned || assigned.size === 0 || assigned.has(serviceId);
     });
-  }, [staff, serviceId, restrictedServicesByStaff]);
+  }, [staff, serviceId, locationId, restrictedServicesByStaff]);
 
   useEffect(() => {
     if (!date || !staffId || !service) return;

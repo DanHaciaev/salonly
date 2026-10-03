@@ -11,14 +11,17 @@ import { SectionLabel } from "@/components/brand/section-label";
 
 export default async function BusinessPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ business: string }>;
+  searchParams: Promise<{ location?: string }>;
 }) {
   const { business: slug } = await params;
+  const { location: selectedLocationId } = await searchParams;
   const business = (await getBusinessBySlug(slug))!;
   const supabase = await createClient();
 
-  const [{ data: services }, { data: staff }, { data: reviews }] = await Promise.all([
+  const [{ data: services }, { data: staff }, { data: reviews }, { data: locations }] = await Promise.all([
     supabase
       .from("services")
       .select("*")
@@ -38,9 +41,37 @@ export default async function BusinessPage({
       .eq("is_published", true)
       .order("created_at", { ascending: false })
       .limit(6),
+    supabase
+      .from("locations")
+      .select("*")
+      .eq("business_id", business.id)
+      .eq("is_active", true)
+      .order("sort_order"),
   ]);
 
-  const staffIds = (staff ?? []).map((s) => s.id);
+  const hasMultipleLocations = (locations?.length ?? 0) > 1;
+  const activeLocation = locations?.find((l) => l.id === selectedLocationId);
+
+  // Staff with no location assigned are shown regardless of which location is picked.
+  const visibleStaff = (staff ?? []).filter(
+    (member) => !activeLocation || !member.location_id || member.location_id === activeLocation.id
+  );
+
+  function bookHref(extra?: Record<string, string>) {
+    const params = new URLSearchParams(extra);
+    if (activeLocation) params.set("location", activeLocation.id);
+    const qs = params.toString();
+    return `/${slug}/book${qs ? `?${qs}` : ""}`;
+  }
+
+  function locationHref(locationId?: string) {
+    const params = new URLSearchParams();
+    if (locationId) params.set("location", locationId);
+    const qs = params.toString();
+    return `/${slug}${qs ? `?${qs}` : ""}`;
+  }
+
+  const staffIds = visibleStaff.map((s) => s.id);
   const { data: portfolioPreview } = staffIds.length
     ? await supabase
         .from("portfolio_items")
@@ -84,7 +115,7 @@ export default async function BusinessPage({
             <Pill className="bg-transparent">
               <a href="#services">Услуги</a>
             </Pill>
-            {!!staff?.length && (
+            {!!visibleStaff.length && (
               <Pill className="bg-transparent">
                 <a href="#staff">Мастера</a>
               </Pill>
@@ -96,7 +127,7 @@ export default async function BusinessPage({
             )}
           </nav>
           <Button asChild>
-            <Link href={`/${slug}/book`}>
+            <Link href={bookHref()}>
               Записаться <ArrowRight />
             </Link>
           </Button>
@@ -107,14 +138,14 @@ export default async function BusinessPage({
       <section className="px-6 pt-16 pb-20">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
-            {business.address && (
+            {(activeLocation?.address ?? business.address) && (
               <Pill>
-                <MapPin className="size-3.5" /> {business.address}
+                <MapPin className="size-3.5" /> {activeLocation?.address ?? business.address}
               </Pill>
             )}
-            {business.phone && (
+            {(activeLocation?.phone ?? business.phone) && (
               <Pill>
-                <Phone className="size-3.5" /> {business.phone}
+                <Phone className="size-3.5" /> {activeLocation?.phone ?? business.phone}
               </Pill>
             )}
           </div>
@@ -130,7 +161,7 @@ export default async function BusinessPage({
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button size="lg" className="h-12 px-7 text-base" asChild>
-              <Link href={`/${slug}/book`}>
+              <Link href={bookHref()}>
                 Записаться онлайн <ArrowRight />
               </Link>
             </Button>
@@ -149,6 +180,46 @@ export default async function BusinessPage({
           )}
         </div>
       </section>
+
+      {/* LOCATIONS */}
+      {hasMultipleLocations && (
+        <section className="border-y border-espresso/10 bg-white px-6 py-16">
+          <div className="mx-auto max-w-4xl">
+            <SectionLabel>филиалы</SectionLabel>
+            <h2 className="mt-3 mb-8 font-heading text-3xl text-espresso md:text-4xl">
+              Выберите удобный филиал
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {locations!.map((location) => {
+                const isSelected = activeLocation?.id === location.id;
+                return (
+                  <Link key={location.id} href={locationHref(isSelected ? undefined : location.id)}>
+                    <Card
+                      className={`p-2 transition-colors ${
+                        isSelected ? "bg-espresso text-dusty-rose" : "bg-white text-espresso hover:border-soft-blush/40"
+                      }`}
+                    >
+                      <CardContent className="px-5 py-4">
+                        <p className="font-heading text-lg">{location.name}</p>
+                        {location.address && (
+                          <p className={`mt-1 text-sm ${isSelected ? "text-dusty-rose/70" : "text-espresso/50"}`}>
+                            {location.address}
+                          </p>
+                        )}
+                        {location.phone && (
+                          <p className={`text-sm ${isSelected ? "text-dusty-rose/70" : "text-espresso/50"}`}>
+                            {location.phone}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SERVICES */}
       {!!services?.length && (
@@ -178,7 +249,7 @@ export default async function BusinessPage({
                         {priceFormatter.format(service.price)}
                       </span>
                       <Button variant="outline" asChild>
-                        <Link href={`/${slug}/book?service=${service.id}`}>Записаться</Link>
+                        <Link href={bookHref({ service: service.id })}>Записаться</Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -190,7 +261,7 @@ export default async function BusinessPage({
       )}
 
       {/* STAFF */}
-      {!!staff?.length && (
+      {!!visibleStaff.length && (
         <section id="staff" className="px-6 py-20 scroll-mt-20">
           <div className="mx-auto max-w-5xl">
             <SectionLabel>команда</SectionLabel>
@@ -198,7 +269,7 @@ export default async function BusinessPage({
               Наши мастера
             </h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {staff.map((member) => {
+              {visibleStaff.map((member) => {
                 const cover = firstPortfolioByStaff.get(member.id);
                 return (
                   <Link key={member.id} href={`/${slug}/staff/${member.id}`}>
@@ -276,7 +347,7 @@ export default async function BusinessPage({
               Выберите услугу, мастера и удобное время — это займёт пару минут.
             </p>
             <Button size="lg" variant="secondary" className="mt-7 h-12 px-7" asChild>
-              <Link href={`/${slug}/book`}>
+              <Link href={bookHref()}>
                 Записаться онлайн <ArrowRight />
               </Link>
             </Button>

@@ -20,6 +20,7 @@ export async function upsertStaff(
   const bio = String(formData.get("bio") ?? "").trim();
   const avatarFile = formData.get("avatar") as File | null;
   const serviceIds = formData.getAll("service_ids").map(String);
+  const locationId = String(formData.get("location_id") ?? "").trim();
 
   if (!name) return { error: "Введите имя мастера" };
 
@@ -39,6 +40,7 @@ export async function upsertStaff(
     name,
     title: title || null,
     bio: bio || null,
+    location_id: locationId || null,
     ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
   };
 

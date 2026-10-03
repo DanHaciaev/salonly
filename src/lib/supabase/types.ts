@@ -105,6 +105,7 @@ export interface Database {
         {
           id: string;
           business_id: string;
+          location_id: string | null;
           name: string;
           title: string | null;
           bio: string | null;
@@ -117,6 +118,7 @@ export interface Database {
         {
           id?: string;
           business_id: string;
+          location_id?: string | null;
           name: string;
           title?: string | null;
           bio?: string | null;
@@ -129,6 +131,7 @@ export interface Database {
         Partial<{
           id: string;
           business_id: string;
+          location_id: string | null;
           name: string;
           title: string | null;
           bio: string | null;
@@ -136,6 +139,38 @@ export interface Database {
           is_active: boolean;
           sort_order: number;
           access_token: string;
+          created_at: string;
+        }>
+      >;
+      locations: Table<
+        {
+          id: string;
+          business_id: string;
+          name: string;
+          address: string | null;
+          phone: string | null;
+          is_active: boolean;
+          sort_order: number;
+          created_at: string;
+        },
+        {
+          id?: string;
+          business_id: string;
+          name: string;
+          address?: string | null;
+          phone?: string | null;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+        },
+        Partial<{
+          id: string;
+          business_id: string;
+          name: string;
+          address: string | null;
+          phone: string | null;
+          is_active: boolean;
+          sort_order: number;
           created_at: string;
         }>
       >;

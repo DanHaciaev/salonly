@@ -17,6 +17,7 @@ type Staff = Database["public"]["Tables"]["staff"]["Row"];
 type Service = Database["public"]["Tables"]["services"]["Row"];
 type PortfolioItem = Database["public"]["Tables"]["portfolio_items"]["Row"];
 type StaffHours = Database["public"]["Tables"]["staff_hours"]["Row"];
+type Location = Database["public"]["Tables"]["locations"]["Row"];
 
 export function StaffDetailManager({
   staff,
@@ -24,12 +25,14 @@ export function StaffDetailManager({
   services,
   assignedServiceIds,
   hours,
+  locations,
 }: {
   staff: Staff;
   portfolio: PortfolioItem[];
   services: Service[];
   assignedServiceIds: Set<string>;
   hours: StaffHours[];
+  locations: Location[];
 }) {
   const [editingHeader, setEditingHeader] = useState(false);
   const [addingPortfolio, setAddingPortfolio] = useState(false);
@@ -41,6 +44,7 @@ export function StaffDetailManager({
           staff={staff}
           services={services}
           assignedServiceIds={assignedServiceIds}
+          locations={locations}
           onCancel={() => setEditingHeader(false)}
           onSaved={() => setEditingHeader(false)}
         />

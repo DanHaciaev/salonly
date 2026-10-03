@@ -9,10 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Database } from "@/lib/supabase/types";
 
 type Staff = Database["public"]["Tables"]["staff"]["Row"];
 type Service = Database["public"]["Tables"]["services"]["Row"];
+type Location = Database["public"]["Tables"]["locations"]["Row"];
 
 const initialState: StaffFormState = {};
 
@@ -20,12 +22,14 @@ export function StaffForm({
   staff,
   services,
   assignedServiceIds,
+  locations,
   onCancel,
   onSaved,
 }: {
   staff?: Staff;
   services: Service[];
   assignedServiceIds?: Set<string>;
+  locations: Location[];
   onCancel: () => void;
   onSaved: () => void;
 }) {
@@ -78,6 +82,24 @@ export function StaffForm({
           <Label htmlFor="bio">О мастере</Label>
           <Textarea id="bio" name="bio" defaultValue={staff?.bio ?? ""} placeholder="Опыт, подход, сертификаты" />
         </div>
+
+        {!!locations.length && (
+          <div className="flex flex-col gap-1.5">
+            <Label>Филиал</Label>
+            <Select name="location_id" defaultValue={staff?.location_id ?? undefined}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Не привязан к конкретному филиалу" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations.map((location) => (
+                  <SelectItem key={location.id} value={location.id}>
+                    {location.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {!!services.length && (
           <div className="flex flex-col gap-2">

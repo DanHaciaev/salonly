@@ -9,10 +9,10 @@ export default async function BookPage({
   searchParams,
 }: {
   params: Promise<{ business: string }>;
-  searchParams: Promise<{ service?: string; staff?: string }>;
+  searchParams: Promise<{ service?: string; staff?: string; location?: string }>;
 }) {
   const { business: slug } = await params;
-  const { service, staff: staffParam } = await searchParams;
+  const { service, staff: staffParam, location: locationId } = await searchParams;
   const business = (await getBusinessBySlug(slug))!;
   const supabase = await createClient();
 
@@ -59,6 +59,7 @@ export default async function BookPage({
           staffServices={staffServices ?? []}
           initialServiceId={service}
           initialStaffId={staffParam}
+          locationId={locationId}
         />
       )}
     </div>

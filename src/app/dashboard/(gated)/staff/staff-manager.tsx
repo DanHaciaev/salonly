@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Images, Pencil, Plus } from "lucide-react";
+import { Images, MapPin, Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ import type { Database } from "@/lib/supabase/types";
 
 type Staff = Database["public"]["Tables"]["staff"]["Row"];
 type Service = Database["public"]["Tables"]["services"]["Row"];
+type Location = Database["public"]["Tables"]["locations"]["Row"];
 
 type Mode = { type: "idle" } | { type: "create" } | { type: "edit"; id: string };
 
@@ -20,11 +21,14 @@ export function StaffManager({
   staff,
   services,
   staffServiceIds,
+  locations,
 }: {
   staff: Staff[];
   services: Service[];
   staffServiceIds: Map<string, Set<string>>;
+  locations: Location[];
 }) {
+  const locationNameById = new Map(locations.map((l) => [l.id, l.name]));
   const [mode, setMode] = useState<Mode>({ type: "idle" });
 
   return (
@@ -46,6 +50,7 @@ export function StaffManager({
       {mode.type === "create" && (
         <StaffForm
           services={services}
+          locations={locations}
           onCancel={() => setMode({ type: "idle" })}
           onSaved={() => setMode({ type: "idle" })}
         />
@@ -66,6 +71,7 @@ export function StaffManager({
                   staff={member}
                   services={services}
                   assignedServiceIds={staffServiceIds.get(member.id)}
+                  locations={locations}
                   onCancel={() => setMode({ type: "idle" })}
                   onSaved={() => setMode({ type: "idle" })}
                 />
@@ -82,6 +88,11 @@ export function StaffManager({
                       <p className="truncate font-medium text-espresso">{member.name}</p>
                       {member.title && (
                         <p className="truncate text-sm text-espresso/50">{member.title}</p>
+                      )}
+                      {member.location_id && locationNameById.has(member.location_id) && (
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-espresso/40">
+                          <MapPin className="size-3" /> {locationNameById.get(member.location_id)}
+                        </p>
                       )}
                     </div>
                   </div>

@@ -15,6 +15,7 @@ import {
   ExternalLink,
   LogOut,
   Menu,
+  MapPin,
 } from "lucide-react";
 import { signOut } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ type Business = Database["public"]["Tables"]["businesses"]["Row"];
 const navItems = [
   { href: "/dashboard", label: "Обзор", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/bookings", label: "Записи", icon: CalendarDays },
+  { href: "/dashboard/locations", label: "Филиалы", icon: MapPin },
   { href: "/dashboard/services", label: "Услуги", icon: Scissors },
   { href: "/dashboard/staff", label: "Мастера", icon: Users },
   { href: "/dashboard/reviews", label: "Отзывы", icon: Star },

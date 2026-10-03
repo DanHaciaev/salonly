@@ -96,9 +96,15 @@ export default function Home() {
             salonly
           </Link>
           <nav className="hidden items-center gap-2 md:flex">
-            <Pill>Возможности</Pill>
-            <Pill>Тарифы</Pill>
-            <Pill>Как это работает</Pill>
+            <Pill asChild>
+              <a href="#features">Возможности</a>
+            </Pill>
+            <Pill asChild>
+              <a href="#pricing">Тарифы</a>
+            </Pill>
+            <Pill asChild>
+              <a href="#how-it-works">Как это работает</a>
+            </Pill>
           </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
@@ -159,7 +165,7 @@ export default function Home() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-7 text-base" asChild>
-              <Link href="/demo-salon">Смотреть демо</Link>
+              <Link href="/demo">Смотреть демо</Link>
             </Button>
           </div>
 
@@ -227,7 +233,7 @@ export default function Home() {
       </section>
 
       {/* FEATURE GRID — alternating dark / blush cards */}
-      <section className="px-6 py-24">
+      <section id="features" className="scroll-mt-24 px-6 py-24">
         <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-3">
           <Card className="bg-espresso p-7 text-dusty-rose md:col-span-2">
             <p className="font-heading text-2xl">CRM, которая считает за вас</p>
@@ -260,7 +266,7 @@ export default function Home() {
       </section>
 
       {/* STEPS */}
-      <section className="border-y border-espresso/10 bg-white px-6 py-24">
+      <section id="how-it-works" className="scroll-mt-24 border-y border-espresso/10 bg-white px-6 py-24">
         <div className="mx-auto max-w-3xl">
           <SectionLabel>как это работает</SectionLabel>
           <h2 className="mt-4 mb-10 font-heading text-3xl text-espresso md:text-4xl">
@@ -286,7 +292,7 @@ export default function Home() {
       </section>
 
       {/* PRICING */}
-      <section className="px-6 py-24">
+      <section id="pricing" className="scroll-mt-24 px-6 py-24">
         <div className="mx-auto max-w-5xl text-center">
           <SectionLabel>тарифы</SectionLabel>
           <h2 className="mx-auto mt-4 max-w-xl font-heading text-3xl text-espresso md:text-4xl">
@@ -357,16 +363,21 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-md text-dusty-rose/80">
               7 дней бесплатно, своя ссылка для клиентов уже сегодня.
             </p>
-            <div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
+            <form
+              action="/signup"
+              method="GET"
+              className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
+            >
               <input
                 type="email"
+                name="email"
                 placeholder="Ваш email"
                 className="h-12 flex-1 rounded-full border-0 bg-white/95 px-5 text-sm text-espresso placeholder:text-espresso/40 outline-none"
               />
-              <Button size="lg" variant="secondary" className="h-12 px-6">
+              <Button type="submit" size="lg" variant="secondary" className="h-12 px-6">
                 Начать <ArrowRight />
               </Button>
-            </div>
+            </form>
           </CardContent>
         </Card>
       </section>

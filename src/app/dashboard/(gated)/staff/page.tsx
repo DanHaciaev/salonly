@@ -6,7 +6,7 @@ export default async function StaffPage() {
   const business = await getCurrentBusiness();
   const supabase = await createClient();
 
-  const [{ data: staff }, { data: services }] = await Promise.all([
+  const [{ data: staff }, { data: services }, { data: locations }] = await Promise.all([
     supabase
       .from("staff")
       .select("*")
@@ -15,6 +15,11 @@ export default async function StaffPage() {
       .order("created_at"),
     supabase
       .from("services")
+      .select("*")
+      .eq("business_id", business!.id)
+      .order("sort_order"),
+    supabase
+      .from("locations")
       .select("*")
       .eq("business_id", business!.id)
       .order("sort_order"),
@@ -32,6 +37,11 @@ export default async function StaffPage() {
   }
 
   return (
-    <StaffManager staff={staff ?? []} services={services ?? []} staffServiceIds={staffServiceIds} />
+    <StaffManager
+      staff={staff ?? []}
+      services={services ?? []}
+      staffServiceIds={staffServiceIds}
+      locations={locations ?? []}
+    />
   );
 }

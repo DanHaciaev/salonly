@@ -23,7 +23,7 @@ export default async function StaffDetailPage({
 
   if (!staff) notFound();
 
-  const [{ data: portfolio }, { data: services }, { data: assignments }, { data: hours }] =
+  const [{ data: portfolio }, { data: services }, { data: assignments }, { data: hours }, { data: locations }] =
     await Promise.all([
       supabase
         .from("portfolio_items")
@@ -34,6 +34,7 @@ export default async function StaffDetailPage({
       supabase.from("services").select("*").eq("business_id", business!.id).order("sort_order"),
       supabase.from("staff_services").select("service_id").eq("staff_id", staffId),
       supabase.from("staff_hours").select("*").eq("staff_id", staffId),
+      supabase.from("locations").select("*").eq("business_id", business!.id).order("sort_order"),
     ]);
 
   const assignedServiceIds = new Set((assignments ?? []).map((a) => a.service_id));
@@ -53,6 +54,7 @@ export default async function StaffDetailPage({
         services={services ?? []}
         assignedServiceIds={assignedServiceIds}
         hours={hours ?? []}
+        locations={locations ?? []}
       />
     </div>
   );
